@@ -6,7 +6,10 @@ import { blobToBase64 } from "./utils";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 
 type Props = {
-  onRecordingStopped: (url: string) => Promise<string>;
+  onRecordingStopped: (
+    url: string,
+    body: string
+  ) => AsyncGenerator<string, void, unknown>;
 };
 
 export default function Chat({ onRecordingStopped }: Props) {
@@ -17,14 +20,29 @@ export default function Chat({ onRecordingStopped }: Props) {
   const { isRecording, startRecording, stopRecording, isBlocked } = useVoice(
     async (_, event) => {
       const inBase64 = await blobToBase64(event.data);
-      const outBase64 = await onRecordingStopped(inBase64);
-      const audio = new Audio(outBase64);
-      audio.play().catch((e) => console.error("Error playing audio:", e));
+      const outBase64 = await onRecordingStopped("/api", inBase64);
+
+      const queue: HTMLAudioElement[] = [];
+      for await (const out of outBase64) {
+        const audio = new Audio(out);
+        if (queue.length === 0) {
+          audio.play();
+        }
+
+        queue.push(audio);
+
+        audio.onended = () => {
+          queue.splice(0, 1);
+          if (queue.length === 0) return;
+          const audio = queue[0];
+          audio.play();
+        };
+      }
     }
   );
 
   return (
-    <>
+    <group position={[0, -2, 0]} scale={[0.8, 0.8, 0.8]}>
       <primitive object={controller.scene} />
       <primitive
         onClick={startRecording}
@@ -36,6 +54,6 @@ export default function Chat({ onRecordingStopped }: Props) {
         object={stopButton.scene}
         scale={[1, !isRecording ? 0.5 : 1, 1]}
       />
-    </>
+    </group>
   );
 }

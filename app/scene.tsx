@@ -3,38 +3,29 @@
 import React from "react";
 import { Canvas } from "@react-three/fiber";
 import Chat from "./chat";
+import { SSE as EventSource } from "sse.js";
 
-type Props = {
-  onRecordingStopped: (url: string) => Promise<string>;
-};
+async function* fetchStreamingText(url: string, body: string) {
+  const eventSource = new EventSource(url, {
+    method: "POST",
+    payload: body,
+  });
 
-// function Box(props: any) {
-//   // This reference gives us direct access to the THREE.Mesh object
-//   const ref = useRef<THREE.Mesh>();
-//   // Hold state for hovered and clicked events
-//   const [hovered, hover] = useState(false);
-//   const [clicked, click] = useState(false);
-//   // Subscribe this component to the render-loop, rotate the mesh every frame
-//   useFrame((state, delta) => {
-//     if (ref.current) ref.current.rotation.x += delta;
-//   });
-//   // Return the view, these are regular Threejs elements expressed in JSX
-//   return (
-//     <mesh
-//       {...props}
-//       ref={ref}
-//       scale={clicked ? 1.5 : 1}
-//       onClick={() => click(!clicked)}
-//       onPointerOver={() => hover(true)}
-//       onPointerOut={() => hover(false)}
-//     >
-//       <boxGeometry args={[1, 1, 1]} />
-//       <meshStandardMaterial color={hovered ? "hotpink" : "orange"} />
-//     </mesh>
-//   );
-// }
+  try {
+    while (true) {
+      const event = await new Promise((resolve, reject) => {
+        eventSource.onmessage = (e) => resolve(e.data);
+        eventSource.onerror = (e) => reject(e);
+      });
 
-export default function Scene({ onRecordingStopped }: Props) {
+      yield event as string;
+    }
+  } finally {
+    eventSource.close();
+  }
+}
+
+export default function Scene() {
   return (
     <div className="w-screen h-screen">
       <Canvas shadows dpr={[1, 2]} camera={{ position: [10, 10, 0], fov: 20 }}>
@@ -51,7 +42,7 @@ export default function Scene({ onRecordingStopped }: Props) {
           decay={0}
           intensity={Math.PI * 10}
         />
-        <Chat onRecordingStopped={onRecordingStopped} />
+        <Chat onRecordingStopped={fetchStreamingText} />
       </Canvas>
     </div>
   );

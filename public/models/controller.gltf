@@ -3,12 +3,6 @@
 		"generator":"Khronos glTF Blender I/O v4.0.44",
 		"version":"2.0"
 	},
-	"extensionsUsed":[
-		"EXT_texture_webp"
-	],
-	"extensionsRequired":[
-		"EXT_texture_webp"
-	],
 	"scene":0,
 	"scenes":[
 		{
@@ -75,19 +69,15 @@
 	],
 	"textures":[
 		{
-			"extensions":{
-				"EXT_texture_webp":{
-					"source":0
-				}
-			},
-			"sampler":0
+			"sampler":0,
+			"source":0
 		}
 	],
 	"images":[
 		{
-			"mimeType":"image/webp",
+			"mimeType":"image/png",
 			"name":"plastic",
-			"uri":"plastic.webp"
+			"uri":"plastic.png"
 		}
 	],
 	"accessors":[
