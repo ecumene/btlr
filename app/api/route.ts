@@ -10,25 +10,6 @@ interesting to share. If necessary, prompt the user for more relevant questions\
 at the end or try to drive the conversation somewhere else entirely. Your\
 purpose is to inspire, educate and relate.`;
 
-function iteratorToStream(iterator: any) {
-  // return new ReadableStream({
-  //   async pull(controller) {
-  //     const { value, done } = await iterator.next();
-  //     if (done) {
-  //       controller.close();
-  //     } else {
-  //       controller.enqueue(value);
-  //     }
-  //   },
-  // });
-}
-
-function sleep(time: number) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, time);
-  });
-}
-
 async function* createOpenAIVoiceStream(content: string) {
   const completion = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",

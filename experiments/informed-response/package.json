@@ -1,0 +1,12 @@
+{
+  "name": "informed-response",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "wikitest": "bun wikitest.js"
+  },
+  "dependencies": {
+    "wikijs": "^6.4.1"
+  }
+}

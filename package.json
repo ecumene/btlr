@@ -10,9 +10,6 @@
   },
   "dependencies": {
     "@react-three/fiber": "^8.15.16",
-    "@react-three/flex": "^1.0.1",
-    "lamejs": "^1.2.1",
-    "mic-recorder-to-mp3": "^2.2.2",
     "next": "14.1.0",
     "openai": "^4.27.0",
     "react": "^18",
@@ -25,7 +22,6 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/three": "^0.161.2",
-    "@types/webrtc": "^0.0.42",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.0",
